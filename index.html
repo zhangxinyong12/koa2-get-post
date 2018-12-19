@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <input type="file" name="a" id="file">
+    <button type="submit" onclick="sub()">提交</button>
+</body>
+<script>
+
+    // axios.defaults.headers.common['Authorization'] = 'zhangxinyong'; // 自定义头信息
+    // 注意 不要写axios.defaults.headers.post 这样无效
+    // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'; //  默认的form表单就是这种形式
+    // axios.defaults.headers['Content-Type'] = 'multipart/form-data'; // 对文件分割上传
+    // axios.defaults.headers['Content-Type'] = 'application/json'; // 最常见的方式。
+    // axios.defaults.headers['Content-Type'] = 'text/xml'; // 不常见
+
+    const url = 'http://127.0.0.1:3000/';
+    axios.get(url + '?a=4&b=4').then((res) => {
+        console.log(res.data);
+    });
+    // // post 
+    // axios.post(url + 'test/post?x=uuuuuu', { a: 3, b: 4 }).then((res) => {
+    //     console.log(res.data);
+    // });
+
+    // multipart/form-data 
+    function sub() {
+        const formData = new FormData();
+        formData.append('file', document.querySelector('#file').files[0]);
+        formData.append('type', 2);
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data;charset=utf-8'
+            }
+        };
+        axios.post(url + 'test/uploadfile', formData, config).then((res) => {
+            console.log(res.data);
+        });
+    }
+
+    // const http = axios.create({
+    //     url: 'test/post?x=uuuuuuuu',
+    //     baseURL: url,
+    //     mthod: 'post',
+    //     params: { a: 33, b: 000 }, // url 拼接的
+    //     data: {
+    //         x: 'cans'
+    //     },
+    //     // headers: {
+    //     //     'Content-Type': 'text/xml'
+    //     // }
+    // });
+    // http.post(url + 'test/post?x=uuuuuuuu', { a: 3, b: 4 }).then((res) => {
+    //     console.log(res.data);
+    // });
+</script>
+
+</html>
