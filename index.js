@@ -8,8 +8,9 @@ const cors = require('koa2-cors');
 const koaBody = require('koa-body'); //解析文件流
 app.use(koaBody({
   multipart: true,  // 运行多个文件
+  strict: true,  //默认true，不解析GET,HEAD,DELETE请求
   formidable: {
-    maxFileSize: 200 * 1024 * 1024    // 设置上传文件大小最大限制，默认2M
+    maxFileSize: 2 * 1024 * 1024   // 设置上传文件大小最大限制，默认2M
   }
 }));
 
@@ -60,6 +61,9 @@ page.get('/404', async (ctx) => {
   .get('/helloworld', async (ctx) => {
     ctx.body = 'hello world page';
   })
+  .get('/init', async (ctx) => {
+    ctx.body = ctx.request.query;
+  })
   .post('/post', async (ctx) => {
     console.log(ctx.request.query); // 获取 url 后面参数
     const { a, b } = ctx.request.body;
@@ -83,8 +87,11 @@ page.get('/404', async (ctx) => {
   })
   .post('/uploadfile', async (ctx) => { //  上传文件
     const file = ctx.request.files.file; // 获取上传文件
-    console.log(file);
-    const name = file.name;
+    const size = file.size; // 大小
+    const type = file.type; // 类型
+    const name = file.name; // 名字
+    console.log(size, type, name);
+
     ctx.body = { name };
   });
 

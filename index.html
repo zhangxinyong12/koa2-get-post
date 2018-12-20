@@ -24,6 +24,7 @@
         <li onclick="post_json()">一般的json形式，最常见</li>
         <li onclick="post_form()">form表单形式</li>
         <li onclick="post_text()">text形式-不常用</li>
+        <li onclick="get_init()">get请求</li>
     </ul>
     <div id="box">
         <h3>请求结果</h3>
@@ -43,7 +44,11 @@
     axios.get(url + '?a=4&b=4').then((res) => {
         console.log(res.data);
     });
-
+    function get_init() {
+        axios.get(url + 'test/init?a=4&b=4').then((res) => {
+            console.log(res.data);
+        });
+    }
     function post_json() {
         const config = {
             headers: {
