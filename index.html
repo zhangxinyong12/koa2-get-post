@@ -7,15 +7,31 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        li{
+            height: 40px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
     <input type="file" name="a" id="file">
-    <button type="submit" onclick="sub()">提交</button>
+    <button type="submit" onclick="sub()">提交,文件上传形式</button>
+    <ul>
+        <li onclick="post_json()">一般的json形式，最常见</li>
+        <li onclick="post_form()">form表单形式</li>
+        <li onclick="post_text()">text形式-不常用</li>
+    </ul>
+    <div id="box">
+        <h3>请求结果</h3>
+
+    </div>
 </body>
 <script>
-
+    const box = document.querySelector('#box');
     // axios.defaults.headers.common['Authorization'] = 'zhangxinyong'; // 自定义头信息
     // 注意 不要写axios.defaults.headers.post 这样无效
     // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'; //  默认的form表单就是这种形式
@@ -27,11 +43,31 @@
     axios.get(url + '?a=4&b=4').then((res) => {
         console.log(res.data);
     });
-    // // post 
-    // axios.post(url + 'test/post?x=uuuuuu', { a: 3, b: 4 }).then((res) => {
-    //     console.log(res.data);
-    // });
 
+    function post_json() {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        axios.post(url + 'test/post?x=json', { a: 3, b: 4 }, config).then((res) => {
+            console.log(res.data);
+        });
+    }
+    // 一般的form 表单形式
+    function post_form() {
+        const config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        };
+        const formData = new FormData();
+        formData.append('a', 4444444);
+        formData.append('b', 33333);
+        axios.post(url + 'test/postForm?x=form', formData, config).then((res) => {
+            console.log(res.data);
+        });
+    }
     // multipart/form-data 
     function sub() {
         const formData = new FormData();
@@ -39,11 +75,23 @@
         formData.append('type', 2);
         const config = {
             headers: {
-                'Content-Type': 'multipart/form-data;charset=utf-8'
+                'Content-Type': 'multipart/form-data'
             }
         };
         axios.post(url + 'test/uploadfile', formData, config).then((res) => {
             console.log(res.data);
+        });
+    }
+
+    // text 不常用。就不介绍了
+    function post_text() {
+        const config = {
+            headers: {
+                'Content-Type': 'text/xml'
+            }
+        };
+        axios.post(url + 'test/postText?x=text', { a: 3, b: 4 }, config).then((res) => {
+            box.innerHTML += res.data;
         });
     }
 

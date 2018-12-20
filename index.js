@@ -7,18 +7,18 @@ const Router = require('koa-router');
 const cors = require('koa2-cors');
 const koaBody = require('koa-body'); //解析文件流
 app.use(koaBody({
-  multipart: true,
+  multipart: true,  // 运行多个文件
   formidable: {
     maxFileSize: 200 * 1024 * 1024    // 设置上传文件大小最大限制，默认2M
   }
 }));
 
-const bodyParser = require('koa-bodyparser');
-app.use(bodyParser({
-  extendTypes: {
-    json: ['application/x-javascript', 'application/x-www-form-urlencoded', 'multipart/form-data', 'text/xml'] // 支持的类型
-  }
-})); // post 获取参数
+// const bodyParser = require('koa-bodyparser');  // 不支持 form-data
+// app.use(bodyParser({
+//   extendTypes: {
+//     json: ['application/x-javascript', 'application/x-www-form-urlencoded', 'multipart/form-data', 'text/xml'] // 支持的类型
+//   }
+// })); // post 获取参数
 
 // 
 app.use(cors({
@@ -68,12 +68,27 @@ page.get('/404', async (ctx) => {
     };
     ctx.body = body;
   })
+  .post('/postForm', async (ctx) => {
+    const { a, b } = ctx.request.body;
+    const body = {
+      a, b
+    };
+    ctx.body = body;
+  })
+  .post('/postText', async (ctx) => { // text/xml
+    const body = `
+      <a href="http://www.baidu.com">百度链接</a>
+    `;
+    ctx.body = body;
+  })
   .post('/uploadfile', async (ctx) => { //  上传文件
     const file = ctx.request.files.file; // 获取上传文件
     console.log(file);
     const name = file.name;
     ctx.body = { name };
   });
+
+
 // 装载所有子路由
 let router = new Router();
 router.use('/', home.routes(), home.allowedMethods());
